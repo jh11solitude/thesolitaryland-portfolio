@@ -264,14 +264,16 @@ class FeaturedWork(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='featured_as'
+        related_name='featured_as',
+        limit_choices_to={'is_featured': True, 'is_published': True}
     )
     video = models.ForeignKey(
         Video,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='featured_as'
+        related_name='featured_as',
+        limit_choices_to={'is_featured': True, 'is_published': True}
     )
 
     display_order = models.PositiveIntegerField(

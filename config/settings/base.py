@@ -140,3 +140,8 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # BigAutoField = 64-bit integer IDs
 # Future-proofs against running out of IDs in large tables
+
+
+# Contact form settings
+DEFAULT_FROM_EMAIL = 'input_your_email'
+CONTACT_EMAIL = 'input_your_email'   # Where enquiries land
