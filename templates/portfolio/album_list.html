@@ -1,1 +1,48 @@
-<h1>Albums</h1>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Series{% endblock %}
+{% block nav_albums %}active{% endblock %}
+
+{% block content %}
+<div class="jk-page-offset">
+  <section class="jk-section">
+
+    <div class="jk-section__header reveal">
+      <h1 class="jk-section__title t-display">Series</h1>
+    </div>
+
+    {% if albums %}
+      <div class="jk-video-grid">   
+        {% for album in albums %}
+          <a href="{% url 'portfolio:album-detail' slug=album.slug %}"
+             class="jk-video-card reveal" style="text-decoration:none;">
+
+            {% if album.cover_image %}
+              <img class="jk-video-card__thumb"
+                   src="{{ album.cover_image.url }}"
+                   alt="{{ album.title }}"
+                   loading="lazy" />
+            {% else %}
+              <div class="jk-video-card__thumb" style="background:var(--c-bg-3); aspect-ratio:3/2;"></div>
+            {% endif %}
+
+            <div class="jk-video-card__info">
+              <p class="jk-video-card__title">{{ album.title }}</p>
+              <p class="jk-video-card__category">
+                {{ album.photos.count }} photograph{{ album.photos.count|pluralize }}
+              </p>
+            </div>
+
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div style="padding:var(--sp-xl) 0; text-align:center;">
+        <p class="t-label" style="color:var(--c-text-faint)">No series published yet.</p>
+      </div>
+    {% endif %}
+
+  </section>
+</div>
+{% endblock %}
