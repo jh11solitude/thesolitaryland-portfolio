@@ -27,7 +27,6 @@ ENV/
 
 # NEVER commit your secret key or database password
 .env
-.env.*
 
 # Uploaded user media — these are runtime files, not source code
 media/
