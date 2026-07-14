@@ -1,1 +1,93 @@
-<h1>Contact</h1>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contact{% endblock %}
+{% block nav_contact %}active{% endblock %}
+
+{% block content %}
+<div class="jk-page-offset">
+  <section class="jk-section" style="max-width: 900px;">
+
+    <!-- Header -->
+    <p class="t-caption reveal" style="color: var(--c-gold); margin-bottom: var(--sp-sm)">
+      Get in touch
+    </p>
+    <h1 class="t-display reveal" style="
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--sp-sm);
+    ">
+      Let's talk.
+    </h1>
+    <p class="reveal" style="color: var(--c-text-dim); font-size: 1rem; margin-bottom: var(--sp-xl);">
+      For commissions, collaborations, or conversations.
+    </p>
+
+    <!-- Form -->
+    <form method="post" class="jk-form reveal" novalidate>
+      {% csrf_token %}
+
+      <!-- Name -->
+      <div class="jk-form__group">
+        <label class="jk-form__label" for="{{ form.name.id_for_label }}">
+          {{ form.name.label }}
+        </label>
+        {{ form.name }}
+        {% if form.name.errors %}
+          {% for error in form.name.errors %}
+            <p style="color:#c0392b; font-size:0.75rem; margin-top:0.3rem;">{{ error }}</p>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <!-- Email -->
+      <div class="jk-form__group">
+        <label class="jk-form__label" for="{{ form.email.id_for_label }}">
+          {{ form.email.label }}
+        </label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          {% for error in form.email.errors %}
+            <p style="color:#c0392b; font-size:0.75rem; margin-top:0.3rem;">{{ error }}</p>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <!-- Subject -->
+      <div class="jk-form__group">
+        <label class="jk-form__label" for="{{ form.subject.id_for_label }}">
+          {{ form.subject.label }} <span style="color:var(--c-text-faint)">(optional)</span>
+        </label>
+        {{ form.subject }}
+      </div>
+
+      <!-- Message -->
+      <div class="jk-form__group">
+        <label class="jk-form__label" for="{{ form.message.id_for_label }}">
+          {{ form.message.label }}
+        </label>
+        {{ form.message }}
+        {% if form.message.errors %}
+          {% for error in form.message.errors %}
+            <p style="color:#c0392b; font-size:0.75rem; margin-top:0.3rem;">{{ error }}</p>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <!-- Submit -->
+      <div style="margin-top: var(--sp-lg)">
+        <button type="submit" class="jk-btn">
+          Send message
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="1.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+
+    </form>
+
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{% block meta_description %}TheSolitaryLand — Photographer · Videographer · Visual Storyteller{% endblock %}" />
+
+  <title>{% block title %}TheSolitaryLand{% endblock %}</title>
+
+  <!-- ── Fonts ─────────────────────────────────────────── -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- ── Bootstrap 5 ───────────────────────────────────── -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- ── Site CSS ──────────────────────────────────────── -->
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+  <!-- ── Navigation ────────────────────────────────────── -->
+  <nav class="jk-nav" id="jk-nav">
+    <a href="{% url 'pages:home' %}" class="jk-nav__logo">TheSolitaryLand</a>
+    
+    <!-- hamburger menu for mobile interface -->
+    <button class="jk-nav__hamburger" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span>
+    </button>
+
+    <ul class="jk-nav__links" id="nav-links">
+      <li><a href="{% url 'portfolio:photo-list' %}" class="jk-nav__link {% block nav_photos %}{% endblock %}">Photography</a></li>
+      <li><a href="{% url 'portfolio:video-list' %}" class="jk-nav__link {% block nav_videos %}{% endblock %}">Film</a></li>
+      <li><a href="{% url 'portfolio:album-list' %}" class="jk-nav__link {% block nav_albums %}{% endblock %}">Series</a></li>
+      <li><a href="{% url 'pages:about' %}" class="jk-nav__link {% block nav_about %}{% endblock %}">About</a></li>
+      <li><a href="{% url 'contact:contact' %}" class="jk-nav__link {% block nav_contact %}{% endblock %}">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Flash messages ────────────────────────────────── -->
+  {% if messages %}
+    <div class="jk-messages" aria-live="polite">
+      {% for message in messages %}
+        <div class="jk-message jk-message--{{ message.tags }}">
+          {{ message }}
+          <button class="jk-message__close" onclick="this.parentElement.remove()" aria-label="Dismiss">×</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- ── Page content ──────────────────────────────────── -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+<!-- ── Footer ────────────────────────────────────────── -->
+<footer class="jk-footer">
+  <div class="jk-footer__inner">
+    
+    <!-- LEFT COMPONENT: Ultra-clean Minimal Icons Line -->
+    <div class="jk-footer__socials">
+      <a href="https://www.instagram.com/thesolitaryland_/" target="_blank" aria-label="Instagram">
+        <svg width="13" height="13" viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+        </svg>
+      </a>
+      <!-- <a href="https://facebook.com" target="_blank" aria-label="Facebook">
+        <svg width="13" height="13" viewBox="0 0 24 24">
+          <path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.323-1.325z"/>
+        </svg>
+      </a> -->
+      <a href="https://www.flickr.com/photos/204754942@N06/albums" target="_blank" aria-label="Flickr">
+        <svg width="13" height="13" viewBox="0 0 24 24">
+          <circle cx="5" cy="12" r="5"/><circle cx="19" cy="12" r="5"/>
+        </svg>
+      </a>
+      <a href="https://www.youtube.com/@TheSolitaryLand" target="_blank" aria-label="YouTube">
+        <svg width="13" height="13" viewBox="0 0 24 24">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+      </a>
+      <!-- <a href="mailto:jeromejh11@gmail.com" aria-label="Email">
+        <svg width="13" height="13" viewBox="0 0 24 24">
+          <path d="M0 3v18h24v-18h-24zm21.518 2l-9.518 7.713-9.518-7.713h19.036zm-19.518 14v-11.817l10 8.104 10-8.104v11.817h-20z"/>
+        </svg>
+      </a> -->
+    </div>
+
+    <!-- RIGHT COMPONENT: Typographic Contact Block -->
+    <div class="jk-footer__contact-panel">
+      <p class="jk-footer__contact-title">Contact</p>
+      <p class="jk-footer__email">
+        <a href="mailto:jeromejh11@gmail.com">jeromejh11@gmail.com</a>
+      </p>
+    </div>
+
+  </div>
+  
+  <!-- BOTTOM SECTION: Centered Branding Metadata Area -->
+  <!-- <div class="jk-footer__branding">
+    <p class="jk-footer__name">TheSolitaryLand</p>
+    <p class="jk-footer__tagline">Photographer · Videographer · Visual Storyteller</p>
+    <p class="jk-footer__copy">&copy; {% now "Y" %} TheSolitaryLand. All rights reserved.</p>
+  </div>
+</footer> -->
+
+  
+<!-- LIGHTBOX HTML CONTAINER ──────────────────────────────────────────-->
+<!-- THE LIGHTBOX POPUP BOX -->
+<div id="jkLightbox" class="jk-lightbox">
+  <!-- Exit UI Element -->
+  <span class="jk-lightbox__close">&times;</span>
+  
+  <!-- Left Navigation Arrow -->
+  <button class="jk-lightbox__arrow jk-lightbox__arrow--left" id="jkPrevBtn" aria-label="Previous image">&#10094;</button>
+  
+  <!-- Content Center Frame -->
+  <div class="jk-lightbox__container">
+    <img class="jk-lightbox__content" id="jkLightboxImg" src="" alt="Enlarged View">
+    <div class="jk-lightbox__caption" id="jkLightboxCaption"></div>
+  </div>
+  
+  <!-- Right Navigation Arrow -->
+  <button class="jk-lightbox__arrow jk-lightbox__arrow--right" id="jkNextBtn" aria-label="Next image">&#10095;</button>
+</div>
+
+
+  <!-- ── Scripts ───────────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+
+
+</body>
+</html>

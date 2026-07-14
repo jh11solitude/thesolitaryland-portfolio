@@ -1,1 +1,60 @@
-<h1>Album Detail</h1>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ album.title }}{% endblock %}
+{% block nav_albums %}active{% endblock %}
+
+{% block content %}
+<div class="jk-page-offset">
+
+  <!-- Album header -->
+  <section class="jk-section" style="max-width:800px;">
+    <a href="{% url 'portfolio:album-list' %}" class="t-label reveal"
+       style="color:var(--c-gold); display:block; margin-bottom:var(--sp-md)">
+      ← Series
+    </a>
+    <h1 class="t-display reveal" style="
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--sp-sm);
+    ">
+      {{ album.title }}
+    </h1>
+    {% if album.description %}
+      <p class="reveal" style="font-size:1rem; color:var(--c-text-dim); line-height:1.8; max-width:560px;">
+        {{ album.description }}
+      </p>
+    {% endif %}
+    <p class="t-label reveal" style="margin-top:var(--sp-sm); color:var(--c-text-faint)">
+      {{ album_photos.count }} photograph{{ album_photos.count|pluralize }}
+    </p>
+  </section>
+
+  <!-- Ordered masonry grid -->
+  <section class="jk-section" style="padding-top:0;">
+    {% if album_photos %}
+      <div class="jk-grid">
+        {% for photo in album_photos %}
+          <div class="jk-grid__item reveal">
+            <a href="{% url 'portfolio:photo-detail' slug=photo.slug %}" class="js-lightbox-trigger" data-caption="{{ photo.description }}">
+              <img src="{{ photo.image.url }}" alt="{{ photo.title }}" loading="lazy" />
+              <div class="jk-grid__overlay">
+                <div class="jk-grid__caption">
+                  <!-- <div class="jk-grid__caption-title">{{ photo.title }}</div> -->
+                  {% if photo.location %}
+                    <div class="jk-grid__caption-meta">{{ photo.location }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="t-label" style="color:var(--c-text-faint)">No photos in this series yet.</p>
+    {% endif %}
+  </section>
+
+</div>
+{% endblock %}

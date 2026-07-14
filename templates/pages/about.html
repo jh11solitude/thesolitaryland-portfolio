@@ -1,1 +1,105 @@
-<h1>About</h1>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}About{% endblock %}
+{% block nav_about %}active{% endblock %}
+
+{% block content %}
+<div class="jk-page-offset">
+
+  <!-- ── About hero ────────────────────────────────────────── -->
+  <section class="jk-section" style="max-width: 900px; padding-top: var(--sp-xl);">
+    <p class="t-caption reveal" style="color: var(--c-gold); margin-bottom: var(--sp-sm)">
+      About
+    </p>
+    <h1 class="t-display reveal" style="
+      font-size: clamp(3rem, 7vw, 6rem);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      margin-bottom: var(--sp-lg);
+    ">
+      TheSolitaryLand
+    </h1>
+  </section>
+
+  <!-- ── Two-column story layout ───────────────────────────── -->
+  <section class="jk-section" style="
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-xl);
+    align-items: start;
+    max-width: 1100px;
+  ">
+
+    <!-- Portrait placeholder -->
+    <div class="reveal" style="
+      background: var(--c-bg-3);
+      aspect-ratio: 3/4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    ">
+      
+        <!-- Replace this with your portrait: -->
+        <img src="{% static 'images/portrait_3.jpg' %}" alt="Jerome Koh" style="width:100%;height:100%;object-fit:cover;" />
+     
+      <span class="t-label" style="color: var(--c-text-faint)"></span>
+    </div>
+
+    <!-- Story text -->
+    <div>
+      <div class="reveal" style="margin-bottom: var(--sp-md)">
+        <p class="t-label" style="color:var(--c-gold); margin-bottom: var(--sp-sm)">Jerome Koh</p>
+        <p style="font-size:1.05rem; line-height:1.85; text-align:justify; text-justify:inter-character; text-align-last:left; color:var(--c-text-dim)">
+          Based in Singapore. This living portfolio marks the exact transition from a quiet observer to an active explorer chasing life’s Negative 25. The work highlights a deliberate journey across diverse places and cultures, capturing unique, unscripted perspectives through the lens.
+        </p>
+      </div>
+
+
+      <div class="reveal" style="margin-bottom: var(--sp-lg)">
+        <p class="t-label" style="color:var(--c-gold); margin-bottom: var(--sp-sm)">
+        </p>
+        <p style="font-size:1.05rem; line-height:1.85; text-align:justify; text-justify:inter-character; text-align-last:left; color:var(--c-text-dim)">
+          "To see the world, things dangerous to come to, to see behind walls, draw closer, to find each other and to feel. That is the purpose of life."
+        </p>
+      </div>
+
+      <!-- <div class="reveal" style="margin-bottom: var(--sp-lg)">
+        <p class="t-label" style="color:var(--c-gold); margin-bottom: var(--sp-sm)">
+        </p>
+        <p style="font-size:1.05rem; line-height:1.85; text-align:justify; text-justify:inter-character; text-align-last:left; color:var(--c-text-dim)">
+          For future input
+        </p>
+      </div> -->
+
+      <div class="reveal">
+        <a href="{% url 'contact:contact' %}" class="jk-btn">Get in touch →</a>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── Disciplines strip ─────────────────────────────────── -->
+  <section style="
+    border-top: 1px solid var(--c-border);
+    border-bottom: 1px solid var(--c-border);
+    padding: var(--sp-lg) var(--sp-md);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sp-lg);
+    justify-content: center;
+  ">
+    {% for discipline in disciplines %}
+      <span class="reveal" style="
+        font-family: var(--f-display);
+        font-size: clamp(1.1rem, 2.5vw, 1.8rem);
+        font-weight: 300;
+        color: var(--c-text-dim);
+        letter-spacing: -0.01em;
+      ">{{ discipline }}</span>
+    {% endfor %}
+  </section>
+
+</div>
+{% endblock %}

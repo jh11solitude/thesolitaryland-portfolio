@@ -1,1 +1,160 @@
-<h1>Home</h1>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}TheSolitaryLand{% endblock %}
+{% block meta_description %}TheSolitaryLand — Photographer · Videographer · Visual Storyteller{% endblock %}
+
+{% block content %}
+
+<!-- ══════════════════════════════════════════════════════════════
+     HERO — fullscreen cinematic
+     ════════════════════════════════════════════════════════════ -->
+<section class="jk-hero">
+
+  <div class="jk-hero__bg">
+    
+      <!-- TO USE A HERO VIDEO:
+      Upload an MP4 to static/videos/hero.mp4 then uncomment: -->
+
+      <!-- <video autoplay muted loop playsinline>
+        <source src="{% static 'videos/hero_video_1.mp4' %}" type="video/mp4" />
+      </video> -->
+   
+      <!-- TO USE A HERO IMAGE instead: -->
+      <img src="{% static 'images/hero_image_1.jpg' %}" alt="TheSolitaryLand — Photography" />
+   
+  </div>
+
+  <!-- Hero text -->
+  <div class="jk-hero__content">
+    <!-- <p class="jk-hero__eyebrow">To be updated if needed</p> -->
+
+    <h1 class="jk-hero__title">
+      TheSolitaryLand<br />
+    </h1>
+
+    <p class="jk-hero__sub">
+      Photographer · Videographer · Visual Storyteller
+    </p>
+
+    <a href="{% url 'portfolio:photo-list' %}" class="jk-hero__cta">
+      View Work
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="1.5">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </div>
+
+</section>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     FEATURED WORK — database-controlled via Django Admin
+     ════════════════════════════════════════════════════════════ -->
+{% if featured_works %}
+  <section class="jk-section">
+    <div class="jk-section__header reveal">
+      <h2 class="jk-section__title t-display">Selected Works</h2>
+      <a href="{% url 'portfolio:photo-list' %}" class="jk-section__link">All Photography →</a>
+    </div>
+
+    <div class="jk-grid">
+      {% for featured in featured_works %}
+        {% with item=featured.get_item %}
+          {% if item %}
+            <div class="jk-grid__item reveal">
+              {% if featured.photo %}
+                <a href="{% url 'portfolio:photo-detail' slug=featured.photo.slug %}" 
+                   class="js-lightbox-trigger" 
+                   data-caption="{{ featured.photo.description }}"> 
+                  <img src="{{ featured.photo.image.url }}"
+                       alt="{{ featured.photo.title }}"
+                       loading="lazy" />
+                  <div class="jk-grid__overlay">
+                    <div class="jk-grid__caption">
+                      <div class="jk-grid__caption-title">
+                        {{ featured.title }}
+                      </div>
+                      {% if featured.photo.category %}
+                        <div class="jk-grid__caption-meta">{{ featured.photo.category.name }}</div>
+                      {% endif %}
+                    </div>
+                  </div>
+                </a>
+              {% elif featured.video %}
+                <a href="{{ featured.video.embed_url|default:'#' }}" target="_blank" rel="noopener">
+                  {% if featured.video.thumbnail %}
+                    <img src="{{ featured.video.thumbnail.url }}"
+                         alt="{{ featured.video.title }}"
+                         loading="lazy" />
+                  {% endif %}
+                  <div class="jk-grid__overlay">
+                    <div class="jk-grid__caption">
+                      <div class="jk-grid__caption-title">
+                        {{ featured.video.title }}
+                      </div>
+                      <div class="jk-grid__caption-meta">Film</div>
+                    </div>
+                  </div>
+                </a>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endwith %}
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     LATEST PHOTOS — fallback if no featured work set
+     ════════════════════════════════════════════════════════════ -->
+{% if latest_photos and not featured_works %}
+  <section class="jk-section">
+    <div class="jk-section__header reveal">
+      <h2 class="jk-section__title t-display">Latest</h2>
+      <a href="{% url 'portfolio:photo-list' %}" class="jk-section__link">All Photography →</a>
+    </div>
+    <div class="jk-grid">
+      {% for photo in latest_photos %}
+        <div class="jk-grid__item reveal">
+          <a href="{% url 'portfolio:photo-detail' slug=photo.slug %}" 
+             class="js-lightbox-trigger" 
+             data-caption="{{ photo.description }}"> 
+            <img src="{{ photo.image.url }}" alt="{{ photo.title }}" loading="lazy" />
+            <div class="jk-grid__overlay">
+              <div class="jk-grid__caption">
+                <div class="jk-grid__caption-meta">{{ photo.category.name }}</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     BRIEF STATEMENT — editorial text break
+     ════════════════════════════════════════════════════════════ -->
+<section class="jk-section" style="max-width:760px; margin:0 auto; text-align:center;">
+  <p class="reveal" style="
+    font-family: var(--f-display);
+    font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+    font-weight: 300;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    color: var(--c-text);
+  ">
+    When the word falls short, the lens speaks.<br />
+  </p>
+  <div style="margin-top: var(--sp-md)" class="reveal">
+    <a href="{% url 'pages:about' %}" class="jk-btn">About→</a>
+  </div>
+</section>
+
+
+{% endblock %}

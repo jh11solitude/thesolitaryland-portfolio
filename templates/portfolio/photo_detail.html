@@ -1,1 +1,108 @@
-<h1>Photo Detail</h1>
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ photo.title }}{% endblock %}
+{% block meta_description %}{{ photo.description|truncatewords:20 }}{% endblock %}
+
+{% block content %}
+<article class="jk-detail">
+
+  <!-- ── Full-width image ──────────────────────────────────── -->
+  <div class="jk-detail__hero">
+    <img
+      src="{{ photo.image.url }}"
+      alt="{{ photo.title }}"
+    />
+  </div>
+
+  <!-- ── Story + metadata ─────────────────────────────────── -->
+  <div class="jk-detail__body">
+
+    {% if photo.category %}
+      <p class="t-caption reveal" style="color: var(--c-gold); margin-bottom: 0.8rem;">
+        {{ photo.category.name }}
+      </p>
+    {% endif %}
+
+    <!-- <h1 class="jk-detail__title reveal">{{ photo.title }}</h1> -->
+
+    <!-- Meta strip -->
+    <!-- <div class="jk-detail__meta reveal">
+      {% if photo.location %}
+        <div class="jk-detail__meta-item">
+          <span class="jk-detail__meta-label">Location</span>
+          <span class="jk-detail__meta-value">{{ photo.location }}</span>
+        </div>
+      {% endif %}
+
+      {% if photo.taken_at %}
+        <div class="jk-detail__meta-item">
+          <span class="jk-detail__meta-label">Date</span>
+          <span class="jk-detail__meta-value">{{ photo.taken_at|date:"F Y" }}</span>
+        </div>
+      {% endif %}
+
+      {% if photo.camera_info %}
+        <div class="jk-detail__meta-item">
+          <span class="jk-detail__meta-label">Camera</span>
+          <span class="jk-detail__meta-value">{{ photo.camera_info }}</span>
+        </div>
+      {% endif %}
+
+      <div class="jk-detail__meta-item">
+        <span class="jk-detail__meta-label">Views</span>
+        <span class="jk-detail__meta-value">{{ photo.view_count }}</span>
+      </div>
+    </div> -->
+
+    <!-- Story -->
+    {% if photo.description %}
+      <div class="jk-detail__description reveal">
+        {{ photo.description|linebreaksbr }}
+      </div>
+    {% endif %}
+
+    <!-- Tags -->
+    {% if photo.tags.all %}
+      <div class="jk-detail__tags reveal">
+        {% for tag in photo.tags.all %}
+          <span class="jk-tag">{{ tag.name }}</span>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Back link -->
+    <div style="margin-top: var(--sp-lg)" class="reveal">
+      <a href="{% url 'portfolio:photo-list' %}" class="t-label"
+         style="color: var(--c-gold)">← Back to Photography</a>
+    </div>
+
+  </div>
+
+  <!-- ── Related photos ───────────────────────────────────── -->
+  {% if related_photos %}
+    <section class="jk-section" style="border-top: 1px solid var(--c-border); margin-top: var(--sp-lg)">
+      <div class="jk-section__header reveal">
+        <h2 class="jk-section__title t-display" style="font-size: clamp(1.5rem,3vw,2.5rem)">
+          More from {{ photo.category.name }}
+        </h2>
+      </div>
+      <div class="jk-grid">
+        {% for related in related_photos %}
+          <div class="jk-grid__item reveal">
+            <a href="{% url 'portfolio:photo-detail' slug=related.slug %}">
+              <img src="{{ related.image.url }}" alt="{{ related.title }}" loading="lazy" />
+              <div class="jk-grid__overlay">
+                <div class="jk-grid__caption">
+                  <div class="jk-grid__caption-title">{{ related.title }}</div>
+                </div>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+</article>
+{% endblock %}
