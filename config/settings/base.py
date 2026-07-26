@@ -36,13 +36,17 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    # We'll add DRF and others here later
+    'rest_framework',
+    'django_filters',
+    'drf_spectacular',
+    'corsheaders',
 ]
 
 LOCAL_APPS = [
     'apps.portfolio',
     'apps.pages',
     'apps.contact',
+    'apps.api',
 ]
 
 # Django reads INSTALLED_APPS in order — structure matters
@@ -55,6 +59,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -145,3 +150,50 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Contact form settings
 DEFAULT_FROM_EMAIL = 'input_your_email'
 CONTACT_EMAIL = 'input_your_email'   # Where enquiries land
+
+
+# ─────────────────────────────────────────────────────────────────
+# DJANGO REST FRAMEWORK
+# ─────────────────────────────────────────────────────────────────
+
+REST_FRAMEWORK = {
+    # Default renderer: JSON for API consumers, BrowsableAPI for development
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+
+    # Pagination: every list endpoint returns pages of 50 by default
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 50,
+
+    # Filtering: allows ?category=travel style query params
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+
+    # Schema generation for auto-docs
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
+    # Throttling: rate-limit the public API to prevent abuse
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '200/hour',    # 200 requests per hour for unauthenticated users
+    },
+}
+
+# ─────────────────────────────────────────────────────────────────
+# API DOCUMENTATION (drf-spectacular)
+# ─────────────────────────────────────────────────────────────────
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'TheSolitaryLand Portfolio API',
+    'DESCRIPTION': 'REST API for the TheSolitaryLand photography and video portfolio.',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'CONTACT': {'email': 'support@example.com'},
+}

@@ -13,3 +13,6 @@ INTERNAL_IPS = ['127.0.0.1']
 
 # In development, emails print to the terminal instead of sending
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Allow all origins in development
+CORS_ALLOW_ALL_ORIGINS = True

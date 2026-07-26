@@ -21,9 +21,14 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
+    # HTML site
     path('', include('apps.pages.urls')),          # Home, About
     path('portfolio/', include('apps.portfolio.urls')),
     path('contact/', include('apps.contact.urls')),
+    
+    # REST API — versioned under /api/v1/
+    path('api/v1/', include('apps.api.urls', namespace='api')),
 ]
 
 # Serve media files in development
