@@ -56,14 +56,45 @@ DATABASES = {
 # STATIC FILES — WhiteNoise
 # ─────────────────────────────────────────────────────────────────
 
-# Insert WhiteNoise right after SecurityMiddleware
+# # Insert WhiteNoise right after SecurityMiddleware
+# MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+
+# # CompressedManifestStaticFilesStorage does two things:
+# # 1. Compresses static files (gzip + brotli) for faster delivery
+# # 2. Appends a content hash to filenames e.g. main.abc123.css
+# #    This enables infinite browser caching (file changes = new hash)
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+# ─────────────────────────────────────────────────────────────────
+# STATIC & MEDIA STORAGE — WhiteNoise + Cloudinary
+# ─────────────────────────────────────────────────────────────────
+import cloudinary
+
+# 1. Active WhiteNoise Middleware
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
-# CompressedManifestStaticFilesStorage does two things:
-# 1. Compresses static files (gzip + brotli) for faster delivery
-# 2. Appends a content hash to filenames e.g. main.abc123.css
-#    This enables infinite browser caching (file changes = new hash)
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# 2. Setup Cloudinary Application Order
+INSTALLED_APPS.insert(0, 'cloudinary_storage')
+INSTALLED_APPS += ['cloudinary']
+
+# 3. Configure Cloudinary Credentials
+cloudinary.config(
+    cloud_name=config('CLOUDINARY_CLOUD_NAME'),
+    api_key=config('CLOUDINARY_API_KEY'),
+    api_secret=config('CLOUDINARY_API_SECRET'),
+    secure=True
+)
+
+# 4. Modern Django Storage Routing (Handles both styles and photos)
+STORAGES = {
+    "static": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+}
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -160,21 +191,3 @@ LOGGING = {
     },
 }
 
-
-# ─────────────────────────────────────────────────────────────
-# CLOUDINARY — cloud media storage for production
-# ─────────────────────────────────────────────────────────────
-
-# Forces 'cloudinary_storage' to the absolute start of your apps list
-INSTALLED_APPS.insert(0, 'cloudinary_storage')
-INSTALLED_APPS += ['cloudinary']
-
-cloudinary.config(
-    cloud_name=config('CLOUDINARY_CLOUD_NAME'),
-    api_key=config('CLOUDINARY_API_KEY'),
-    api_secret=config('CLOUDINARY_API_SECRET'),
-    secure=True
-)
-
-# Override default file storage to use Cloudinary
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
