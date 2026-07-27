@@ -165,7 +165,9 @@ LOGGING = {
 # CLOUDINARY — cloud media storage for production
 # ─────────────────────────────────────────────────────────────
 
-INSTALLED_APPS += ['cloudinary', 'cloudinary_storage']
+# Forces 'cloudinary_storage' to the absolute start of your apps list
+INSTALLED_APPS.insert(0, 'cloudinary_storage')
+INSTALLED_APPS += ['cloudinary']
 
 cloudinary.config(
     cloud_name=config('CLOUDINARY_CLOUD_NAME'),
