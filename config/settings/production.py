@@ -59,12 +59,7 @@ DATABASES = {
 # # Insert WhiteNoise right after SecurityMiddleware
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
-# # CompressedManifestStaticFilesStorage does two things:
-# # 1. Compresses static files (gzip + brotli) for faster delivery
-# # 2. Appends a content hash to filenames e.g. main.abc123.css
-# #    This enables infinite browser caching (file changes = new hash)
-# Define ONLY the staticfiles configuration here
-STORAGES = {"staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"}}
+# Note: Storage configuration has been moved to the UNIFIED block at the bottom
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -163,13 +158,14 @@ LOGGING = {
 
 
 # ─────────────────────────────────────────────────────────────
-# CLOUDINARY — cloud media storage for production
+# UNIFIED PRODUCTION STORAGE — WhiteNoise + Cloudinary
 # ─────────────────────────────────────────────────────────────
 
-# Forces 'cloudinary_storage' to the absolute start of your apps list
+# 1. Force Cloudinary to intercept uploads before staticfiles runs
 INSTALLED_APPS.insert(0, 'cloudinary_storage')
 INSTALLED_APPS += ['cloudinary']
 
+# 2. Configure Cloudinary Credentials
 cloudinary.config(
     cloud_name=config('CLOUDINARY_CLOUD_NAME'),
     api_key=config('CLOUDINARY_API_KEY'),
@@ -177,5 +173,14 @@ cloudinary.config(
     secure=True
 )
 
-# Dynamically add the media backend to your existing storage setup
-STORAGES["default"] = {"BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage"}
+# 3. Official Django 6.0+ Unified Storage Registry
+STORAGES = {
+    # WhiteNoise compresses and serve your CSS layouts/designs
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+    # Cloudinary holds your persistent photography/media uploads
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+}
