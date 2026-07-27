@@ -119,7 +119,7 @@ CONTACT_EMAIL = config('CONTACT_EMAIL', default='thesolitaryland11@gmail.com')
 # Only allow your specific frontend domain in production
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='https://thesolitaryland.co,https://www.thesolitaryland.co',
+    default='https://thesolitaryland-portfolio.onrender.com, https://thesolitaryland.co, https://www.thesolitaryland.co',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
