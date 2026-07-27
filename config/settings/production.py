@@ -7,7 +7,7 @@ This file is safe to commit to Git.
 Environment variables required on Render:
   SECRET_KEY          — Django secret key (generate a new one for production)
   DATABASE_URL        — Provided automatically by Render PostgreSQL
-  ALLOWED_HOSTS       — Your domain e.g. thesolitaryland.onrender.com,thesolitaryland.com
+  ALLOWED_HOSTS       — Your domain e.g. thesolitaryland.onrender.com,thesolitaryland.co
   CONTACT_EMAIL       — Where contact form submissions are emailed
   EMAIL_HOST          — SMTP host e.g. smtp.gmail.com
   EMAIL_PORT          — SMTP port e.g. 587
@@ -109,8 +109,8 @@ EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER', default='noreply@jeromekoh.com')
-CONTACT_EMAIL = config('CONTACT_EMAIL', default='jerome@jeromekoh.com')
+DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER', default='noreply@thesolitaryland.com')
+CONTACT_EMAIL = config('CONTACT_EMAIL', default='thesolitaryland11@gmail.com')
 
 # ─────────────────────────────────────────────────────────────────
 # CORS — restrict to your actual frontend domain in production
@@ -119,7 +119,7 @@ CONTACT_EMAIL = config('CONTACT_EMAIL', default='jerome@jeromekoh.com')
 # Only allow your specific frontend domain in production
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='https://thesolitaryland.com,https://www.thesolitaryland.com',
+    default='https://thesolitaryland.co,https://www.thesolitaryland.co',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
