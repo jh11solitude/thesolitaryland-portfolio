@@ -19,6 +19,7 @@ Environment variables required on Render:
 from .base import *
 import dj_database_url
 from decouple import config
+import cloudinary
 
 # ─────────────────────────────────────────────────────────────────
 # CORE
@@ -158,3 +159,20 @@ LOGGING = {
         },
     },
 }
+
+
+# ─────────────────────────────────────────────────────────────
+# CLOUDINARY — cloud media storage for production
+# ─────────────────────────────────────────────────────────────
+
+INSTALLED_APPS += ['cloudinary', 'cloudinary_storage']
+
+cloudinary.config(
+    cloud_name=config('CLOUDINARY_CLOUD_NAME'),
+    api_key=config('CLOUDINARY_API_KEY'),
+    api_secret=config('CLOUDINARY_API_SECRET'),
+    secure=True
+)
+
+# Override default file storage to use Cloudinary
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
