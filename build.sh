@@ -26,4 +26,10 @@ python manage.py collectstatic --no-input
 echo "→ Running database migrations..."
 python manage.py migrate --no-input
 
+# ── 4. Create Admin Superuser (Free Instance Workaround) ─────
+# Automatically hooks into your Render environment panel variables
+# The '|| true' ensures subsequent deploys don't crash when user exists
+echo "→ Checking/Creating admin superuser..."
+python manage.py createsuperuser --no-input || true
+
 echo "✓ Build complete"
