@@ -23,11 +23,11 @@
     </h1>
   </section>
 
-  <!-- ── Two-column story layout ───────────────────────────── -->
+ <!-- ── Two-column story layout (Fixed for mobile) ────────── -->
   <section class="jk-section" style="
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--sp-xl);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--sp-lg);
     align-items: start;
     max-width: 1100px;
   ">
@@ -39,16 +39,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
+      max-width: 450px;
+      margin: 0 auto;
     ">
-      
-        <!-- Replace this with your portrait: -->
         <img src="{% static 'images/portrait_3.jpg' %}" alt="Jerome Koh" style="width:100%;height:100%;object-fit:cover;" />
-     
       <span class="t-label" style="color: var(--c-text-faint)"></span>
     </div>
 
     <!-- Story text -->
-    <div>
+    <div style="width: 100%;">
       <div class="reveal" style="margin-bottom: var(--sp-md)">
         <p class="t-label" style="color:var(--c-gold); margin-bottom: var(--sp-sm)">Jerome Koh</p>
         <p style="font-size:1.05rem; line-height:1.85; text-align:justify; text-justify:inter-character; text-align-last:left; color:var(--c-text-dim)">
@@ -56,22 +56,12 @@
         </p>
       </div>
 
-
       <div class="reveal" style="margin-bottom: var(--sp-lg)">
-        <p class="t-label" style="color:var(--c-gold); margin-bottom: var(--sp-sm)">
-        </p>
+        <p class="t-label" style="color:var(--c-gold); margin-bottom: var(--sp-sm)"></p>
         <p style="font-size:1.05rem; line-height:1.85; text-align:justify; text-justify:inter-character; text-align-last:left; color:var(--c-text-dim)">
           "To see the world, things dangerous to come to, to see behind walls, draw closer, to find each other and to feel. That is the purpose of life."
         </p>
       </div>
-
-      <!-- <div class="reveal" style="margin-bottom: var(--sp-lg)">
-        <p class="t-label" style="color:var(--c-gold); margin-bottom: var(--sp-sm)">
-        </p>
-        <p style="font-size:1.05rem; line-height:1.85; text-align:justify; text-justify:inter-character; text-align-last:left; color:var(--c-text-dim)">
-          For future input
-        </p>
-      </div> -->
 
       <div class="reveal">
         <a href="{% url 'contact:contact' %}" class="jk-btn">Get in touch →</a>
