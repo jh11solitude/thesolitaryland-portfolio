@@ -56,10 +56,23 @@ DATABASES = {
 # STATIC FILES — WhiteNoise
 # ─────────────────────────────────────────────────────────────────
 
-# # Insert WhiteNoise right after SecurityMiddleware
+# Insert WhiteNoise right after SecurityMiddleware
 MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
-# Note: Storage configuration has been moved to the UNIFIED block at the bottom
+# CompressedManifestStaticFilesStorage does two things:
+# 1. Compresses static files (gzip + brotli) for faster delivery
+# 2. Appends a content hash to filenames e.g. main.abc123.css
+#    This enables infinite browser caching (file changes = new hash)
+#
+# NOTE: DEFAULT_FILE_STORAGE / STATICFILES_STORAGE were removed in Django 5.1.
+# On Django 6.0 they are silently ignored, so both storage backends are
+# configured together below via STORAGES (the "default" key is added once
+# Cloudinary is configured further down this file).
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -104,10 +117,18 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
 EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
-DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER', default='noreply@thesolitaryland.com')
-CONTACT_EMAIL = config('CONTACT_EMAIL', default='thesolitaryland11@gmail.com')
+
+# The actual email address sending the alerts (e.g., your Gmail account)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+
+# Your Google App Password (NOT your regular login password!)
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+# The "From:" header clients see when they get an automated copy
+DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER')
+
+# The "To:" destination where client portfolio inquiries actually land
+CONTACT_EMAIL = config('CONTACT_EMAIL')
 
 # ─────────────────────────────────────────────────────────────────
 # CORS — restrict to your actual frontend domain in production
@@ -117,6 +138,18 @@ CONTACT_EMAIL = config('CONTACT_EMAIL', default='thesolitaryland11@gmail.com')
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
     default='https://thesolitaryland-portfolio.onrender.com, https://thesolitaryland.co, https://www.thesolitaryland.co',
+    cast=lambda v: [s.strip() for s in v.split(',')]
+)
+
+
+# ─────────────────────────────────────────────────────────────────
+# CSRF — required since Django 4.0 for any cross-origin POST
+# (e.g. the contact form) to a domain sitting behind Render's proxy
+# ─────────────────────────────────────────────────────────────────
+
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='https://thesolitaryland-portfolio.onrender.com,https://thesolitaryland.co,https://www.thesolitaryland.co',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
@@ -156,16 +189,8 @@ LOGGING = {
     },
 }
 
+INSTALLED_APPS += ['cloudinary', 'cloudinary_storage']
 
-# ─────────────────────────────────────────────────────────────
-# UNIFIED PRODUCTION STORAGE — WhiteNoise + Cloudinary
-# ─────────────────────────────────────────────────────────────
-
-# 1. Force Cloudinary to intercept uploads before staticfiles runs
-INSTALLED_APPS.insert(0, 'cloudinary_storage')
-INSTALLED_APPS += ['cloudinary']
-
-# 2. Configure Cloudinary Credentials
 cloudinary.config(
     cloud_name=config('CLOUDINARY_CLOUD_NAME'),
     api_key=config('CLOUDINARY_API_KEY'),
@@ -173,18 +198,10 @@ cloudinary.config(
     secure=True
 )
 
-# 3. Official Django 6.0+ Unified Storage Registry
-STORAGES = {
-    # WhiteNoise compresses and serve your CSS layouts/designs
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-    # Cloudinary holds your persistent photography/media uploads
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-    },
+# Override default file storage to use Cloudinary.
+# This merges into the STORAGES dict set earlier in this file (which already
+# holds the "staticfiles" key) rather than replacing it, so both the
+# WhiteNoise static files backend and the Cloudinary media backend are active.
+STORAGES["default"] = {
+    "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
 }
-
-# 4. BACKWARD COMPATIBILITY (Fixes the django-cloudinary-storage library bug)
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

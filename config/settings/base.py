@@ -147,9 +147,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Future-proofs against running out of IDs in large tables
 
 
-# Contact form settings
-DEFAULT_FROM_EMAIL = 'input_your_email'
-CONTACT_EMAIL = 'input_your_email'   # Where enquiries land
+# Contact form settings inside base.py
+DEFAULT_FROM_EMAIL = config('EMAIL_HOST_USER', default='noreply@thesolitaryland.com')
+CONTACT_EMAIL = config('CONTACT_EMAIL', default='noreply@thesolitaryland.com')   # Where enquiries land
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -195,5 +195,5 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'REST API for the TheSolitaryLand photography and video portfolio.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
-    'CONTACT': {'email': 'support@example.com'},
+    'CONTACT': {'email': config('CONTACT_EMAIL', default='noreply@thesolitaryland.com')},
 }

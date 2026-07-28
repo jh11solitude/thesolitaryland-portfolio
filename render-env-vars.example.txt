@@ -43,3 +43,18 @@ CORS_ALLOWED_ORIGINS=https://https://thesolitaryland.com,https://www.thesolitary
 
 # Tells Python not to buffer stdout — logs appear in real time
 PYTHONUNBUFFERED=1
+
+# ─────────────────────────────────────────────────────────────────
+# AUTOMATIC SUPERUSER CREATION (Render Build/Start Script)
+# ─────────────────────────────────────────────────────────────────
+# These variables are required by 'python manage.py createsuperuser --no-input'.
+# If these are missing in Render, the automatic admin creation script will fail.
+
+# The username for your primary Django admin account
+DJANGO_SUPERUSER_USERNAME=admin_username_here
+
+# The email address used to log into the Django admin panel
+DJANGO_SUPERUSER_EMAIL=admin_email_here
+
+# A strong, secure password for your live admin panel
+DJANGO_SUPERUSER_PASSWORD=your_secure_production_password_here
