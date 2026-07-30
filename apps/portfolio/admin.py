@@ -7,42 +7,59 @@ from .models import Category, Tag, Photo, Video, Album, AlbumPhoto, FeaturedWork
 
 # Register your models here.
 
+# --- Helper Function for Universal Image Compression ---
+
+def compress_uploaded_image(image_file):
+    if image_file:
+        img = Image.open(image_file)
+        if img.mode in ('RGBA', 'LA', 'P'):
+            img = img.convert('RGB')
+        
+        max_width, max_height = 2500, 2500
+        img.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
+        
+        buffer = BytesIO()
+        img.save(buffer, format='JPEG', quality=85, optimize=True)
+        buffer.seek(0)
+        
+        original_name = image_file.name.split('.')[0]
+        new_filename = f"{original_name}.jpg"
+        
+        return ContentFile(buffer.read(), name=new_filename)
+    return image_file
+
+
 # Define the Custom Form to intercept the image asset
+
 class PhotoAdminForm(forms.ModelForm):
     class Meta:
         model = Photo
         fields = '__all__'
 
     def clean_image(self):
-        image_file = self.cleaned_data.get('image')
-        
-        if image_file:
-            # Open the uploaded file payload with Pillow
-            img = Image.open(image_file)
-            
-            # Convert color channels to standard web RGB if necessary (e.g. transparent PNGs)
-            if img.mode in ('RGBA', 'LA', 'P'):
-                img = img.convert('RGB')
-            
-            # Set structural web bounds (Limits absolute 4K/8K source dimensions safely)
-            max_width, max_height = 2500, 2500
-            img.thumbnail((max_width, max_height), Image.Resampling.LANCZOS)
-            
-            # Save compressed stream dynamically straight to system memory
-            buffer = BytesIO()
-            # quality=85 cuts massive raw files down to ~1.2MB with no perceptual loss
-            img.save(buffer, format='JPEG', quality=85, optimize=True)
-            buffer.seek(0)
-            
-            # Standardize filename format to prevent system mismatching
-            original_name = image_file.name.split('.')[0]
-            new_filename = f"{original_name}.jpg"
-            
-            # Pack the memory stream back into a native Django-safe object payload
-            image_file = ContentFile(buffer.read(), name=new_filename)
-            
-        return image_file
+        return compress_uploaded_image(self.cleaned_data.get('image'))
 
+
+class VideoAdminForm(forms.ModelForm):
+    class Meta:
+        model = Video
+        fields = '__all__'
+
+    def clean_thumbnail(self):
+        return compress_uploaded_image(self.cleaned_data.get('thumbnail'))
+
+
+class AlbumAdminForm(forms.ModelForm):
+    class Meta:
+        model = Album
+        fields = '__all__'
+
+    def clean_cover_image(self):
+        # This protects your Album page from crashing on large cover uploads!
+        return compress_uploaded_image(self.cleaned_data.get('cover_image'))
+
+
+# --- Model Admin Registrations --
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -61,7 +78,6 @@ class TagAdmin(admin.ModelAdmin):
 class PhotoAdmin(admin.ModelAdmin):
     # Hook up the custom form to the existing PhotoAdmin class
     form = PhotoAdminForm  # <--- Crucial link injecting our compression filter
-    
     list_display = ['title', 'category', 'is_published', 'is_featured', 'view_count', 'created_at']
     list_filter = ['is_published', 'is_featured', 'category']
     search_fields = ['title', 'description', 'location']
@@ -75,6 +91,7 @@ class PhotoAdmin(admin.ModelAdmin):
 
 @admin.register(Video)
 class VideoAdmin(admin.ModelAdmin):
+    form = VideoAdminForm
     list_display = ['title', 'video_type', 'category', 'is_published', 'is_featured', 'created_at']
     list_filter = ['is_published', 'is_featured', 'video_type', 'category']
     search_fields = ['title', 'description']
@@ -92,6 +109,7 @@ class AlbumPhotoInline(admin.TabularInline):
 
 @admin.register(Album)
 class AlbumAdmin(admin.ModelAdmin):
+    form = AlbumAdminForm  # Hooked up to compress the Album cover image safely
     list_display = ['title', 'is_published', 'created_at']
     prepopulated_fields = {'slug': ('title',)}
     list_editable = ['is_published']
